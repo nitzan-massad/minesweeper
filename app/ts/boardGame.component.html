@@ -1,0 +1,37 @@
+<div ng-controller="MinesweeperController">
+    <table border="10">
+        <tr ng-repeat="row in minefield.rows">
+            <td ng-repeat="spot in row.spots">
+                {{spot.isCovered}}
+            </td>
+        </tr>
+    </table>
+</div>
+<script>
+    alert('nitzan massad 123');
+function createMinefield() {
+
+var minefield = {};
+minefield.rows = [];
+
+for(var i = 0; i < 9; i++) {
+var row = {};
+row.spots = [];
+
+for(var j = 0; j < 9; j++) {
+var spot = {};
+spot.isCovered = true;
+row.spots.push(spot);
+}
+
+minefield.rows.push(row);
+}
+
+return minefield;
+}
+
+function MinesweeperController($scope) {
+    alert('nitzan massad 123');
+$scope.minefield = createMinefield();
+}
+</script>

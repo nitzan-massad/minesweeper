@@ -1,9 +1,8 @@
 import {Component} from 'angular2/core';
 
-
 @Component({
-    selector: 'my-app',
+    selector: 'boardGame',
     templateUrl: 'app/ts/boardGame.component.html'
 })
 
-export class AppComponent {}
+export class boardGame {}
