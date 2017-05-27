@@ -1,4 +1,5 @@
-<div ng-controller="MinesweeperController">
+
+<div ng-app="scopeController" ng-controller="MinesweeperController">
     <table border="10">
         <tr ng-repeat="row in minefield.rows">
             <td ng-repeat="spot in row.spots">
@@ -7,31 +8,41 @@
         </tr>
     </table>
 </div>
+<div class="container-fluid">
+    <boardGame>Loading...</boardGame>
+</div>
+
 <script>
-    alert('nitzan massad 123');
-function createMinefield() {
 
-var minefield = {};
-minefield.rows = [];
 
-for(var i = 0; i < 9; i++) {
-var row = {};
-row.spots = [];
+    (function(angular) {
+        'use strict';
+        angular.module('scopeController', [])
+            .controller('MinesweeperController', ['$scope', function($scope) {
+                $scope.minefield = createMinefield();
 
-for(var j = 0; j < 9; j++) {
-var spot = {};
-spot.isCovered = true;
-row.spots.push(spot);
-}
+            }]);
+    })(window.angular);
 
-minefield.rows.push(row);
-}
+    function createMinefield() {
+        var minefield = {};
+        minefield.rows = [];
 
-return minefield;
-}
+        for(var i = 0; i < 9; i++) {
+            var row = {};
+            row.spots = [];
 
-function MinesweeperController($scope) {
-    alert('nitzan massad 123');
-$scope.minefield = createMinefield();
-}
+            for(var j = 0; j < 9; j++) {
+                var spot = {};
+                spot.isCovered = true;
+                row.spots.push(spot);
+            }
+
+            minefield.rows.push(row);
+        }
+
+        return minefield;
+    }
 </script>
+
+
