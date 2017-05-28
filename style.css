@@ -1,9 +1,13 @@
+/* style the table */
 .minefield {
     line-height:0;
     border-spacing:0;
     align: center ;
 }
-
+/* style the table rows*/
 .minefield td {
-    padding:0
+    padding:0 ;
+    align: center ;
 }
+
+
