@@ -6,6 +6,8 @@ var numOfFlags = numOfmines ;
 var m_mineField ;
 var superman= false ;
 var tmp ;
+keysDown = {}; // dictionary
+
 (function(angular) {
     'use strict';
     angular.module('scopeController', [])
@@ -14,7 +16,11 @@ var tmp ;
 
             $scope.minefield = createMinefield();
             $scope.uncoverSpot = function(spot) {
-                manageGmae(spot, $scope.minefield);
+                if (keysDown[16]){
+                    spot.isFlaged =!spot.isFlaged;
+                }else {
+                    manageGmae(spot, $scope.minefield);
+                }
             };
             $scope.widget1 = {numOfRows: '10'};
             $scope.widget2 = {nomOfColm: '10'};
@@ -62,6 +68,10 @@ var tmp ;
 
 function manageGmae (spot , mineField)
 {
+    if (spot.isFlaged)
+    {
+        return
+    }
     spot.isCovered = false;
     if (spot.content=="empty")
     {
@@ -155,6 +165,16 @@ function createMinefield() {
     calculateAllNumbers(minefield);
 
     m_mineField = minefield ;
+    addEventListener("keydown", function (e) {
+       if([16].indexOf(e.keyCode) > -1) {
+            e.preventDefault();
+        }
+        keysDown[e.keyCode] = true;
+
+    }, false);
+    addEventListener("keyup", function (e) {
+        keysDown[e.keyCode] = false;
+    }, false);
     return minefield;
 }
 
