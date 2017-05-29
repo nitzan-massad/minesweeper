@@ -5,22 +5,62 @@ var numOfmines  = 20;
 var numOfFlags = numOfmines ;
 var m_mineField ;
 var superman= false ;
-
-
+var tmp ;
 (function(angular) {
     'use strict';
     angular.module('scopeController', [])
         .controller('MinesweeperController', ['$scope', function($scope) {
+
+
             $scope.minefield = createMinefield();
             $scope.uncoverSpot = function(spot) {
-
-                manageGmae(spot);
+                manageGmae(spot, $scope.minefield);
             };
+            $scope.widget1 = {numOfRows: '10'};
+            $scope.widget2 = {nomOfColm: '10'};
+            $scope.widget3 = {nomOfMines: '10'};
+
+            $scope.set = function() {
+                 numOfRows  = this.widget1.numOfRows;
+                 numOfColums = this.widget2.nomOfColm ;
+                 numOfmines  =  this.widget3.nomOfMines ;
+                $scope.minefield = createMinefield () ;
+            }
+            $scope.supermanBox =function () {
+                if (superman == false)
+                {
+                    superman = true;
+                }
+                else
+                {
+                    superman = false;
+                }
+                for (var i =0 ; i < numOfRows ; i++){
+                    for (var j = 0 ;j< numOfColums ; j++) {
+                        var spot =getSpot(m_mineField,i,j);
+                        spot.superman = superman ;
+                    }
+                }
+                $scope.minefield = m_mineField ;
+            }
+
         }]);
+/*
+    angular.module('app', [])
+        .controller('MainCtrl', function($scope) {
+            $scope.widget = {title: 'abc'};
+            $scope.set = function(new_title) {
+                this.widget.title = new_title;
+            }
+        });
+*/
 
 })(window.angular);
 
-function manageGmae (spot)
+
+
+
+function manageGmae (spot , mineField)
 {
     spot.isCovered = false;
     if (spot.content=="empty")
@@ -28,10 +68,10 @@ function manageGmae (spot)
         openAllNearByEmpty(spot.row,spot.colm);
     }
     if(spot.content == "mine") { // new
-        alert ("you lost");
+       console.log("you lost");
     } else { // new
-        if(hasWon($scope.minefield)) { // original code
-            alert("you won");
+        if(hasWon(mineField)) { // original code
+            console.log("you won");
         }
     } // new
 }
@@ -76,9 +116,9 @@ function openAllNearByEmpty(row,colm)
             openAllNearByEmpty(row+1,colm)
         }
         // down and right
-        if (row<numOfRows-1&&numOfColums-1  && getSpot(m_mineField ,row+1,colm+1).isCovered)
+        if (row<numOfRows-1&& colm < numOfColums-1  && getSpot(m_mineField ,row+1,colm+1).isCovered)
         {
-            openAllNearByEmpty(row+1,colm+1)
+            openAllNearByEmpty(row+1,colm+1);
         }
     }
 
@@ -120,7 +160,7 @@ function createMinefield() {
 
 function getSpot(minefield, row, column) {
 
-   console.log("row:" + row+" column:" + column);
+  //console.log("row:" + row+" column:" + column);
 
     return  minefield.rows[row].spots[column];
 }
@@ -265,23 +305,7 @@ function calculateAllNumbers(minefield) {
 }
 
 
-function supermanBox()
-{
-    if (superman == false)
-    {
-        superman = true;
-    }
-    else
-    {
-        superman = false;
-    }
-    for (var i =0 ; i < numOfRows ; i++){
-        for (var j = 0 ;j< numOfColums ; j++) {
-            var spot =getSpot(m_mineField,i,j);
-            spot.superman = superman ;
-        }
-    }
-}
+
 function hasWon(minefield) {
     for(var y = 0; y < 9; y++) {
         for(var x = 0; x < 9; x++) {
