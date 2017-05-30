@@ -1,12 +1,13 @@
 
 var numOfRows  = 10;
 var numOfColums = 10 ;
-var numOfmines  = 20;
+var numOfmines  = 10;
 var numOfFlags = numOfmines ;
 var m_mineField ;
 var superman= false ;
 var tmp ;
 var keysDown ; // dictionary
+var intreval ;
 
 (function(angular) {
     'use strict';
@@ -16,10 +17,23 @@ var keysDown ; // dictionary
 
             $scope.minefield = createMinefield();
             $scope.uncoverSpot = function(spot) {
-                if (keysDown[16]){
-                    spot.isFlaged =!spot.isFlaged;
+               if ($scope.minefield.gameOver){
+                   return
+               }
+                if (keysDown[16] && spot.isCovered){
+
+                   spot.isFlaged =!spot.isFlaged;
+                    if (spot.isFlaged) {
+                        numOfFlags--;
+                    }
+                    else{
+                        numOfFlags++ ;
+                    }
+
+                    $scope.widget4 = {nomOfFlags: numOfFlags};
                     if(hasWon($scope.minefield) )
                     {
+                        $scope.minefield.gameOver=true ;
                         alert("you won !! ")
                     }
                 }else {
@@ -29,13 +43,19 @@ var keysDown ; // dictionary
             $scope.widget1 = {numOfRows: '10'};
             $scope.widget2 = {nomOfColm: '10'};
             $scope.widget3 = {nomOfMines: '10'};
+            $scope.widget4 = {nomOfFlags: '10'};
+
 
             $scope.set = function() {
                  numOfRows  = this.widget1.numOfRows;
                  numOfColums = this.widget2.nomOfColm ;
                  numOfmines  =  this.widget3.nomOfMines ;
+                 numOfFlags = numOfmines ;
+                $scope.widget4 = {nomOfFlags: numOfFlags};
                 $scope.minefield = createMinefield () ;
             }
+
+
             $scope.supermanBox =function () {
                superman =!superman
              /*   for (var i =0 ; i < numOfRows ; i++){
@@ -75,69 +95,66 @@ function manageGmae (spot , mineField)
     spot.isCovered = false;
     if (spot.content=="empty")
     {
-        openAllNearByEmpty(spot.row,spot.colm);
+        openAllNearByEmptyDFS(spot.row,spot.colm);
     }
     if(spot.content == "mine") { // new
        console.log("you lost");
+       spot.content = "9" ;
+       //alert(spot.content) ;
+       mineField.gameOver  = true ;
     }
 }
-function openAllNearByEmpty(row,colm)
+function openAllNearByEmptyDFS(row, colm)
 {
-    getSpot(m_mineField ,row,colm).isCovered= false ;
+    getSpot(m_mineField ,row,colm).isCovered = false ;
     if (getSpot(m_mineField ,row,colm).content=="empty")
     {
         //up and left
         if (row>0 && colm>0 && getSpot(m_mineField ,row-1,colm-1).isCovered)
         {
-            openAllNearByEmpty(row-1,colm-1)
+            openAllNearByEmptyDFS(row-1,colm-1)
         }
         //up
         if (row>0 && getSpot(m_mineField ,row-1,colm).isCovered)
         {
-            openAllNearByEmpty(row-1,colm)
+            openAllNearByEmptyDFS(row-1,colm)
         }
         // up and right
         if (row>0 && colm < numOfColums-1 && getSpot(m_mineField ,row-1,colm+1).isCovered )
         {
-            openAllNearByEmpty(row-1,colm+1)
+            openAllNearByEmptyDFS(row-1,colm+1)
         }
         //left
         if (colm>0 &&  getSpot(m_mineField ,row,colm-1).isCovered )
         {
-            openAllNearByEmpty(row,colm-1)
+            openAllNearByEmptyDFS(row,colm-1)
         }
         // right
         if (colm<numOfColums-1 && getSpot(m_mineField ,row,colm+1).isCovered)
         {
-            openAllNearByEmpty(row,colm+1)
+            openAllNearByEmptyDFS(row,colm+1)
         }
         // down and left
         if (row<numOfRows-1&&colm>0 && getSpot(m_mineField ,row+1,colm-1).isCovered)
         {
-            openAllNearByEmpty(row+1,colm-1)
+            openAllNearByEmptyDFS(row+1,colm-1)
         }
         // down
         if (row<numOfRows-1 && getSpot(m_mineField ,row+1,colm).isCovered)
         {
-            openAllNearByEmpty(row+1,colm)
+            openAllNearByEmptyDFS(row+1,colm)
         }
         // down and right
         if (row<numOfRows-1&& colm < numOfColums-1  && getSpot(m_mineField ,row+1,colm+1).isCovered)
         {
-            openAllNearByEmpty(row+1,colm+1);
+            openAllNearByEmptyDFS(row+1,colm+1);
         }
     }
-
-
-
-
-
-
-
 }
 
+function createMinefield()
+{
 
-function createMinefield() {
     var minefield = {};
     minefield.rows = [];
     keysDown = {};
@@ -157,10 +174,13 @@ function createMinefield() {
         minefield.rows.push(row);
     }
 
-  //  placeManyRandomMines(minefield);
-   // calculateAllNumbers(minefield);
+    intreval = setInterval(lastSettingsBoard(minefield), 1);
+
+    //placeManyRandomMines(minefield);
+    //calculateAllNumbers(minefield);
 
     m_mineField = minefield ;
+
     addEventListener("keydown", function (e) {
        if([16].indexOf(e.keyCode) > -1) {
             e.preventDefault();
@@ -171,8 +191,17 @@ function createMinefield() {
     addEventListener("keyup", function (e) {
         keysDown[e.keyCode] = false;
     }, false);
+
+
     return minefield;
 }
+function lastSettingsBoard (minefield){
+    //console.log("in");
+    placeManyRandomMines(minefield);
+    calculateAllNumbers(minefield);
+    clearInterval(intreval);
+}
+
 
 function getSpot(minefield, row, column) {
 
@@ -313,9 +342,10 @@ function calculateNumber(minefield, row, column) {
 }
 
 function calculateAllNumbers(minefield) {
-    for(var y = 0; y < numOfRows; y++) {
-        for(var x = 0; x < numOfColums; x++) {
-            calculateNumber(minefield, x, y);
+    for(var i = 0; i < numOfRows; i++) {
+        for(var j = 0; j < numOfColums; j++) {
+            console.log("row: "+ i+"   colm: "+j );
+            calculateNumber(minefield, i,j);
         }
     }
 }
@@ -323,8 +353,8 @@ function calculateAllNumbers(minefield) {
 
 
 function hasWon(minefield) {
-    for(var y = 0; y < 9; y++) {
-        for(var x = 0; x < 9; x++) {
+    for(var y = 0; y < numOfRows; y++) {
+        for(var x = 0; x < numOfColums; x++) {
             var spot = getSpot(minefield, y, x);
             if((spot.isFlaged && spot.content != "mine")||(!spot.isFlaged && spot.content == "mine") ) {
                 return false;
@@ -332,4 +362,22 @@ function hasWon(minefield) {
         }
     }
     return true;
+}
+function alertUser(message){
+alert (message);
+}
+function checkIput()
+{
+    if (numOfRows>300 || numOfRows<0)
+    {
+        alertUser("number of rows invalid")
+        return false;
+    }
+    if (numOfColums>300 || numOfColums<0)
+    {
+        alertUser("number of Colums invalid")
+        return false ;
+    }
+
+
 }
