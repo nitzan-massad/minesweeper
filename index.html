@@ -6,25 +6,34 @@
 
     <script src="//code.angularjs.org/snapshot/angular.min.js"></script>
     <script src="script.js"></script>
+    <script src="alertScript.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
 
     <link rel="stylesheet" type="text/css" href="style.css">
 
 
 
 </head>
-<body   background="photos/background.gif"><!--background="photos/empty.png">-->
+<body >
 
-<!--
-<div ng-app="app" ng-controller="MainCtrl">
-    <input name="widget.title" ng-model="widget.title">
-    <button ng-click="set('foo')">set to foo</button>
+
+<div ng-controller="MainCtrl" class="container">
+    <button ng-click="toggleModal('Success')" class="btn btn-default">Success</button>
+    <button ng-click="toggleModal('Remove')" class="btn btn-default">Remove</button>
+    <button ng-click="toggleModal('Deny')" class="btn btn-default">Deny</button>
+    <button ng-click="toggleModal('Cancel')" class="btn btn-default">Cancel</button>
+    <modal visible="showModal">
+        Any additional data / buttons
+    </modal>
 </div>
--->
+
+
+
 
 <div  ng-app="scopeController" ng-controller="MinesweeperController" align="center">
-
-
-
    <label class="labelStyle">number of rows <input name="widget1.numOfRows" ng-model="widget1.numOfRows"></label>
     <label class="labelStyle">number of colms <input name="widget2.nomOfColm" ng-model="widget2.nomOfColm"></label>
     <label class="labelStyle">number of mines   <input name="widget3.nomOfMines" ng-model="widget3.nomOfMines"></label>
@@ -63,6 +72,13 @@
         </tr>
     </table>
 </div>
+
+
+
+
+
+
+
 </body>
 
 

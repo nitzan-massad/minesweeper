@@ -51,3 +51,9 @@ body {
     color: white;
     width: 10%;
 }
+body{
+    /*background: url(photos/background.gif) ;*/
+   background: url(photos/gray.png);
+    background-size: 100%;
+
+}

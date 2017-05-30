@@ -346,7 +346,7 @@ function calculateNumber(minefield, row, column) {
 function calculateAllNumbers(minefield) {
     for(var i = 0; i < numOfRows; i++) {
         for(var j = 0; j < numOfColums; j++) {
-            console.log("row: "+ i+"   colm: "+j );
+            //console.log("row: "+ i+"   colm: "+j );
             calculateNumber(minefield, i,j);
         }
     }
@@ -391,3 +391,5 @@ function checkIput()
 function isNumber(checkNumber) {
     return (!isNaN(parseFloat(checkNumber)) && isFinite(checkNumber));
 }
+
+
