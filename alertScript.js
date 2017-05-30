@@ -1,3 +1,4 @@
+/*
 var mymodal = angular.module('mymodal', []);
 
 mymodal.controller('MainCtrl', function ($scope) {
@@ -49,3 +50,4 @@ mymodal.directive('modal', function () {
     };
 });
 
+*/
