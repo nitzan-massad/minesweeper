@@ -6,7 +6,7 @@ var numOfFlags = numOfmines ;
 var m_mineField ;
 var superman= false ;
 var tmp ;
-keysDown = {}; // dictionary
+var keysDown ; // dictionary
 
 (function(angular) {
     'use strict';
@@ -18,6 +18,10 @@ keysDown = {}; // dictionary
             $scope.uncoverSpot = function(spot) {
                 if (keysDown[16]){
                     spot.isFlaged =!spot.isFlaged;
+                    if(hasWon($scope.minefield) )
+                    {
+                        alert("you won !! ")
+                    }
                 }else {
                     manageGmae(spot, $scope.minefield);
                 }
@@ -33,20 +37,15 @@ keysDown = {}; // dictionary
                 $scope.minefield = createMinefield () ;
             }
             $scope.supermanBox =function () {
-                if (superman == false)
-                {
-                    superman = true;
-                }
-                else
-                {
-                    superman = false;
-                }
-                for (var i =0 ; i < numOfRows ; i++){
+               superman =!superman
+             /*   for (var i =0 ; i < numOfRows ; i++){
                     for (var j = 0 ;j< numOfColums ; j++) {
                         var spot =getSpot(m_mineField,i,j);
                         spot.superman = superman ;
                     }
                 }
+                */
+                m_mineField.superman = superman ;
                 $scope.minefield = m_mineField ;
             }
 
@@ -70,8 +69,9 @@ function manageGmae (spot , mineField)
 {
     if (spot.isFlaged)
     {
-        return
+        return;
     }
+
     spot.isCovered = false;
     if (spot.content=="empty")
     {
@@ -79,11 +79,7 @@ function manageGmae (spot , mineField)
     }
     if(spot.content == "mine") { // new
        console.log("you lost");
-    } else { // new
-        if(hasWon(mineField)) { // original code
-            console.log("you won");
-        }
-    } // new
+    }
 }
 function openAllNearByEmpty(row,colm)
 {
@@ -144,7 +140,7 @@ function openAllNearByEmpty(row,colm)
 function createMinefield() {
     var minefield = {};
     minefield.rows = [];
-
+    keysDown = {};
     for(var i = 0; i < numOfRows; i++) {
         var row = {};
         row.spots = [];
@@ -161,8 +157,8 @@ function createMinefield() {
         minefield.rows.push(row);
     }
 
-    placeManyRandomMines(minefield);
-    calculateAllNumbers(minefield);
+  //  placeManyRandomMines(minefield);
+   // calculateAllNumbers(minefield);
 
     m_mineField = minefield ;
     addEventListener("keydown", function (e) {
@@ -330,11 +326,10 @@ function hasWon(minefield) {
     for(var y = 0; y < 9; y++) {
         for(var x = 0; x < 9; x++) {
             var spot = getSpot(minefield, y, x);
-            if(spot.isCovered && spot.content != "mine") {
+            if((spot.isFlaged && spot.content != "mine")||(!spot.isFlaged && spot.content == "mine") ) {
                 return false;
             }
         }
     }
-
     return true;
 }
