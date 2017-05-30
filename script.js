@@ -5,7 +5,6 @@ var numOfmines  = 10;
 var numOfFlags = numOfmines ;
 var m_mineField ;
 var superman= false ;
-var tmp ;
 var keysDown ; // dictionary
 var intreval ;
 
@@ -53,11 +52,11 @@ var intreval ;
                  numOfFlags = numOfmines ;
                 $scope.widget4 = {nomOfFlags: numOfFlags};
                 $scope.minefield = createMinefield () ;
-            }
+            };
 
 
             $scope.supermanBox =function () {
-               superman =!superman
+               superman =!superman;
              /*   for (var i =0 ; i < numOfRows ; i++){
                     for (var j = 0 ;j< numOfColums ; j++) {
                         var spot =getSpot(m_mineField,i,j);
@@ -154,7 +153,10 @@ function openAllNearByEmptyDFS(row, colm)
 
 function createMinefield()
 {
-
+if(!checkIput())
+{
+    return ;
+}
     var minefield = {};
     minefield.rows = [];
     keysDown = {};
@@ -368,16 +370,24 @@ alert (message);
 }
 function checkIput()
 {
-    if (numOfRows>300 || numOfRows<0)
+    if (numOfRows>300 || numOfRows<0 ||!isNumber(numOfRows))
     {
         alertUser("number of rows invalid")
         return false;
     }
-    if (numOfColums>300 || numOfColums<0)
+    if (numOfColums>300 || numOfColums<0 || !isNumber(numOfColums))
     {
         alertUser("number of Colums invalid")
         return false ;
     }
+    if (numOfmines<0 || numOfmines> numOfRows*numOfColums ||!isNumber(numOfmines))
+    {
+        alertUser("number of mines invalid")
+        return false ;
+    }
 
-
+    return true ;
+}
+function isNumber(checkNumber) {
+    return (!isNaN(parseFloat(checkNumber)) && isFinite(checkNumber));
 }
