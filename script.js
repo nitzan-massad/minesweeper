@@ -7,11 +7,17 @@ var m_mineField ;
 var superman= false ;
 var keysDown ; // dictionary
 var intreval ;
+var popupIntreval ;
+var groupOfEmptyCalls ;
+var index ;
+var mapOfEmptyCell= {} ;
+
 
 (function(angular) {
     'use strict';
     angular.module('scopeController', [])
         .controller('MinesweeperController', ['$scope', function($scope) {
+
 
 
             $scope.minefield = createMinefield();
@@ -20,7 +26,10 @@ var intreval ;
                    return
                }
                 if (keysDown[16] && spot.isCovered){
-
+                   if (!spot.isFlaged && numOfFlags==0){
+                       alertUser("soory you dont have any flags left")
+                       return ;
+                   }
                    spot.isFlaged =!spot.isFlaged;
                     if (spot.isFlaged) {
                         numOfFlags--;
@@ -28,15 +37,15 @@ var intreval ;
                     else{
                         numOfFlags++ ;
                     }
-
                     $scope.widget4 = {nomOfFlags: numOfFlags};
-                    if(hasWon($scope.minefield) )
-                    {
-                        $scope.minefield.gameOver=true ;
-                        alert("you won !! ")
-                    }
+
                 }else {
                     manageGmae(spot, $scope.minefield);
+                }
+                if(hasWon($scope.minefield) )
+                {
+                    $scope.minefield.gameOver=true ;
+                    alertUser("you won !! ")
                 }
             };
             $scope.widget1 = {numOfRows: '10'};
@@ -95,9 +104,10 @@ function manageGmae (spot , mineField)
     if (spot.content=="empty")
     {
         openAllNearByEmptyDFS(spot.row,spot.colm);
+        //openAllNearByEmptFromDic(spot.emptyNum ,mineField);
     }
     if(spot.content == "mine") { // new
-       console.log("you lost");
+       alertUser("you lost");
        spot.content = "9" ;
        //alert(spot.content) ;
        mineField.gameOver  = true ;
@@ -150,7 +160,104 @@ function openAllNearByEmptyDFS(row, colm)
         }
     }
 }
+// a function that preparing all the rmpty spots in grops that it will be quick to open
+function prepareAllNearByGroups(mineField, row ,colum)
+{
+    var empty1 = -1 ;
+    var empty2 = -1 ;
+    var empty3 = -1 ;
+    var empty4 = -1 ;
+    var thisSpot = getSpot(mineField, row ,colum) ;
+    var tmpSpot ;
 
+
+   if (colum>0 && ((tmpSpot =getSpot(mineField, row ,colum-1)).content  == 'empty'))
+   {
+           var empty1 = tmpSpot.emptyNum;
+   }
+    if(colum>0 && row>0 && ((tmpSpot =getSpot(mineField, row-1 ,colum-1)).content  == 'empty'))
+    {
+        var empty2 = tmpSpot.emptyNum;
+    }
+    if( row>0 && ((tmpSpot =getSpot(mineField, row-1 ,colum)).content  == 'empty'))
+    {
+        var empty3 = tmpSpot.emptyNum;
+    }
+    if( row>0 && colum<numOfColums-1 && ((tmpSpot =getSpot(mineField, row-1 ,colum+1)).content  == 'empty'))
+    {
+        var empty4 = tmpSpot.emptyNum;
+    }
+    if ((empty1+empty2 +empty3+empty4)==-4)
+    {
+       thisSpot.emptyNum = index ;
+       index ++ ;
+        groupOfEmptyCalls[thisSpot.emptyNum]= [];
+    }else if ((empty1 == empty2)&& (empty1==empty3)&& (empty1==empty4))
+    {
+        thisSpot.emptyNum = empty1 ;
+    }else if ((empty2 != -1)&&(empty4!=-1)&& (empty2!=empty4))
+    {
+        thisSpot.emptyNum = empty2 ;
+        groupOfEmptyCalls[thisSpot.emptyNum]=connectTwoArray(groupOfEmptyCalls[thisSpot.emptyNum], groupOfEmptyCalls[empty4])
+        groupOfEmptyCalls[empty4]= [] ;
+        mapOfEmptyCell[empty4]= [] ;
+        mapOfEmptyCell[empty4].push(empty2) ;
+        console.log("2-4"   +"empty4: "+empty4+" --->  empty2:"+empty2);
+
+    }else if ((empty1 != -1)&&(empty4!=-1)&& (empty1!=empty4)){
+
+        thisSpot.emptyNum = empty1 ;
+        groupOfEmptyCalls[thisSpot.emptyNum]= connectTwoArray(groupOfEmptyCalls[thisSpot.emptyNum], groupOfEmptyCalls[empty4]) ;
+        groupOfEmptyCalls[empty4]= [] ;
+        mapOfEmptyCell[empty4]= [] ;
+        mapOfEmptyCell[empty4].push(empty1) ;
+       console.log("1-4   emtpy4: "+empty4+" ---> empty1:"+empty1);
+    }
+    else if ((empty1 != -1)){  thisSpot.emptyNum = empty1 ; }
+    else if ((empty2 != -1)){  thisSpot.emptyNum = empty2 ;   }
+    else if ((empty3 != -1)){  thisSpot.emptyNum = empty3 ;   }
+    else if ((empty4 != -1)){  thisSpot.emptyNum = empty4 ;   }
+   // console.log("thisSpot.emptyNum: "+ thisSpot.emptyNum + "  row: "+row+"  colum: "+colum );
+  // console.log(groupOfEmptyCalls[thisSpot.emptyNum]);
+    pushAllRelventCells(row, colum , thisSpot.emptyNum);
+}
+function pushAllRelventCells (row,colum ,index){
+    groupOfEmptyCalls[index].push(row) ;
+    groupOfEmptyCalls[index].push(colum) ;
+
+    if (row >0 && colum>0) {
+        groupOfEmptyCalls[index].push(row - 1);
+        groupOfEmptyCalls[index].push(colum - 1);
+    }
+    if(row>0) {
+        groupOfEmptyCalls[index].push(row - 1);
+        groupOfEmptyCalls[index].push(colum);
+    }
+    if(row>0 && colum<numOfColums-1) {
+        groupOfEmptyCalls[index].push(row - 1);
+        groupOfEmptyCalls[index].push(colum + 1);
+    }
+    if (colum<numOfColums-1) {
+        groupOfEmptyCalls[index].push(row);
+        groupOfEmptyCalls[index].push(colum + 1);
+    }
+    if(row<numOfRows-1 && colum<numOfColums-1) {
+        groupOfEmptyCalls[index].push(row + 1);
+        groupOfEmptyCalls[index].push(colum + 1);
+    }
+    if(row<numOfRows-1) {
+        groupOfEmptyCalls[index].push(row + 1);
+        groupOfEmptyCalls[index].push(colum);
+    }
+    if(row<numOfRows-1&& colum>0) {
+        groupOfEmptyCalls[index].push(row + 1);
+        groupOfEmptyCalls[index].push(colum - 1);
+    }
+    if(colum>0) {
+        groupOfEmptyCalls[index].push(row);
+        groupOfEmptyCalls[index].push(colum - 1);
+    }
+ }
 function createMinefield()
 {
 if(!checkIput())
@@ -204,7 +311,6 @@ function lastSettingsBoard (minefield){
     clearInterval(intreval);
 }
 
-
 function getSpot(minefield, row, column) {
 
   //console.log("row:" + row+" column:" + column);
@@ -256,6 +362,7 @@ function placeManyRandomMines(minefield) {
 
 
 function calculateNumber(minefield, row, column) {
+
 
     var thisSpot = getSpot(minefield, row, column);
 
@@ -341,15 +448,24 @@ function calculateNumber(minefield, row, column) {
     if(mineCount > 0) {
         thisSpot.content = mineCount;
     }
+    else
+    {
+        prepareAllNearByGroups(minefield, row, column)
+    }
 }
 
 function calculateAllNumbers(minefield) {
+    groupOfEmptyCalls ={};
+    index = 0;
     for(var i = 0; i < numOfRows; i++) {
         for(var j = 0; j < numOfColums; j++) {
             //console.log("row: "+ i+"   colm: "+j );
             calculateNumber(minefield, i,j);
         }
     }
+
+    console.log(mapOfEmptyCell);
+
 }
 
 
@@ -358,32 +474,41 @@ function hasWon(minefield) {
     for(var y = 0; y < numOfRows; y++) {
         for(var x = 0; x < numOfColums; x++) {
             var spot = getSpot(minefield, y, x);
-            if((spot.isFlaged && spot.content != "mine")||(!spot.isFlaged && spot.content == "mine") ) {
+            if (spot.content != "mine" && spot.isCovered)
+                return false ;
+
+          /*  if((spot.isFlaged && spot.content != "mine")||(!spot.isFlaged && spot.content == "mine") ) {
                 return false;
             }
+            */
         }
     }
     return true;
 }
-function alertUser(message){
-alert (message);
-}
+
 function checkIput()
 {
+
     if (numOfRows>300 || numOfRows<0 ||!isNumber(numOfRows))
     {
-        alertUser("number of rows invalid")
+        alertUser("sorry, number of rows invalid")
         return false;
     }
     if (numOfColums>300 || numOfColums<0 || !isNumber(numOfColums))
     {
-        alertUser("number of Colums invalid")
+        alertUser("sorry, number of Colums invalid")
         return false ;
     }
     if (numOfmines<0 || numOfmines> numOfRows*numOfColums ||!isNumber(numOfmines))
     {
-        alertUser("number of mines invalid")
+        alertUser("sorry, number of mines invalid")
         return false ;
+    }
+    if (numOfColums*numOfRows >9999)
+    {
+       // popupIntreval = setInterval(alertUser("sorry, it might take a little bit of time..."), 1);
+
+        alertUser("sorry, it might took a little bit of time...")
     }
 
     return true ;
@@ -393,3 +518,57 @@ function isNumber(checkNumber) {
 }
 
 
+function alertUser ( message) {
+    var modal = document.getElementById('myModal');
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+    document.getElementById("PopUpAlert").innerHTML = message;
+    modal.style.display = "block";
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+
+
+
+
+}
+
+function openAllNearByEmptFromDic(emptyNum , mineField)
+{
+    var row =0 ;
+    var colum = 0;
+    var tmp = emptyNum ;
+    while(!(mapOfEmptyCell[tmp]===undefined)){
+        for (var i =0 ; i <mapOfEmptyCell[tmp].length ; i++) {
+            groupOfEmptyCalls[mapOfEmptyCell[tmp]] = connectTwoArray(groupOfEmptyCalls[mapOfEmptyCell[tmp]], groupOfEmptyCalls[tmp])
+        }
+        tmp = mapOfEmptyCell[tmp] ;
+    }
+
+    for (var i = 0 ; i <groupOfEmptyCalls[tmp].length ; i=i+2)
+    {
+         row = groupOfEmptyCalls[tmp][i];
+        // var tmp = groupOfEmptyCalls[emptyNum][i+1];
+        colum = groupOfEmptyCalls[tmp][i+1];
+        //console.log("row: "+row+"  tmp: "+tmp+"  coulm: "+colum)
+        console.log("row: "+row+"  coulm: "+colum)
+        getSpot(mineField, row, colum).isCovered= false ;
+    }
+}
+
+function connectTwoArray (A, B )
+{
+    var C =[];
+    for (var i = 0 ; i<B.length; i++){
+        A.push(B[i]);
+    }
+    return A ;
+}

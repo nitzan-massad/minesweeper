@@ -38,9 +38,10 @@ body {
     text-align: center;
     background: transparent;
     color: white;
-    width: 10%;
+    width: 70%;
 }
-.labelStyle p{
+
+.labelStyle {
     border-radius: 5px;
     border-width:  3px;
     border-color: black;
@@ -49,11 +50,67 @@ body {
     text-align: center;
     background: transparent;
     color: white;
-    width: 10%;
+    width: 20%;
 }
 body{
-    /*background: url(photos/background.gif) ;*/
-   background: url(photos/gray.png);
+    background: url(photos/background.gif) ;
+   /*background: url(photos/gray.png);*/
     background-size: 100%;
 
+}
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    height: 40%;
+    align-content: center;
+    text-align: center;
+    align-items: center;
+
+
+}
+
+/* The Close Button */
+.close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+.modal-content p {
+    text-decoration-style: solid;
+    font-family: "Comic Sans MS", cursive, sans-serif ;
+    font-size: 200%;
+    position: relative;
+    top: 30%;
+
+}
+.modal-content span{
+    size: 40000px;
+    color: black;
 }

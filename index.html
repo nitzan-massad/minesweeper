@@ -3,34 +3,23 @@
 <head>
     <title>minesweeper - nitzan massad</title>
     <meta name="nitzan massd" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
 
     <script src="//code.angularjs.org/snapshot/angular.min.js"></script>
     <script src="script.js"></script>
     <script src="alertScript.js"></script>
-   <!--
-   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
--->
-    <link rel="stylesheet" type="text/css" href="style.css">
 
+
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 
 
 </head>
 <body >
 
-<!--
-<div ng-controller="MainCtrl" class="container">
-    <button ng-click="toggleModal('Success')" class="btn btn-default">Success</button>
-    <button ng-click="toggleModal('Remove')" class="btn btn-default">Remove</button>
-    <button ng-click="toggleModal('Deny')" class="btn btn-default">Deny</button>
-    <button ng-click="toggleModal('Cancel')" class="btn btn-default">Cancel</button>
-    <modal visible="showModal">
-        Any additional data / buttons
-    </modal>
-</div>
 
--->
+
+
 
 
 <div  ng-app="scopeController" ng-controller="MinesweeperController" align="center">
@@ -38,15 +27,11 @@
     <label class="labelStyle">number of colms <input name="widget2.nomOfColm" ng-model="widget2.nomOfColm"></label>
     <label class="labelStyle">number of mines   <input name="widget3.nomOfMines" ng-model="widget3.nomOfMines"></label>
     <label class="labelStyle">number of flags remain    <input name="widget4.nomOfFlags" ng-model="widget4.nomOfFlags" readonly></label>
-
-    <!--  <label>number of flags remain<input name="widget3.nomOfMines" ng-model="widget3.nomOfMines"></label>-->
-
-
     <label>
         superman:
         <input type="checkbox" name="checkbox" ng-click="supermanBox( );" id ="superManCheckBox">
     </label>
-    </br> <button ng-click="set()" class="buttonNewGame">new game</button>
+    </br> <button ng-click="set()" class="buttonNewGame" >new game</button>
     </br>
     </br>
     </br>
@@ -67,10 +52,24 @@
                 <img ng-if="(!spot.isCovered || minefield.superman) && spot.content == 7 && !spot.isFlaged" src="photos/number-7.png" />
                 <img ng-if="(!spot.isCovered || minefield.superman) && spot.content == 8 && !spot.isFlaged" src="photos/number-8.png" />
                 <img ng-if= "spot.content == 9" src="photos/mine-wrong.png" />
+                <img ng-if= "minefield.superman && spot.isFlaged && spot.content == 'mine'" src="photos/flag-mine.png" />
+                <img ng-if= "minefield.superman && spot.isFlaged && (spot.content != 'mine')" src="photos/flag-mine-wrong.png" />
+
 
             </td>
         </tr>
     </table>
+</div>
+
+
+<div id="myModal" class="modal">
+
+    <!-- Modal content -->
+    <div class="modal-content">
+        <span class="close" wid>&times;</span>
+        <p id="PopUpAlert" ></p>
+    </div>
+
 </div>
 
 
@@ -79,6 +78,34 @@
 
 
 
+
+
+
+
+<!--
+<div class="container">
+
+      <button  data-toggle="modal" data-target="#myModal">Open Modal</button>
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Modal Header</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Some text in the modal.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+-->
 </body>
 
 
