@@ -41,16 +41,16 @@
             <td ng-repeat="spot in row.spots" ng-click="uncoverSpot(spot)">
                 <img ng-if=" spot.isFlaged  && !minefield.superman" src="photos/flag-mine.png">
                 <img ng-if="(spot.isCovered && !minefield.superman)&& !spot.isFlaged" src="photos/covered.png" />
-                <img ng-if="(!spot.isCovered || minefield.superman) && spot.content  == 'empty'&& !spot.isFlaged" src="photos/empty.png" />
-                <img ng-if="(!spot.isCovered || minefield.superman) && spot.content == 'mine'&& !spot.isFlaged" src="photos/mine.png" />
-                <img ng-if="(!spot.isCovered || minefield.superman) && spot.content == 1 && !spot.isFlaged" src="photos/number-1.png" />
-                <img ng-if="(!spot.isCovered || minefield.superman) && spot.content == 2 && !spot.isFlaged" src="photos/number-2.png" />
-                <img ng-if="(!spot.isCovered || minefield.superman) && spot.content == 3 && !spot.isFlaged" src="photos/number-3.png" />
-                <img ng-if="(!spot.isCovered || minefield.superman) && spot.content == 4 && !spot.isFlaged" src="photos/number-4.png" />
-                <img ng-if="(!spot.isCovered || minefield.superman) && spot.content == 5 && !spot.isFlaged" src="photos/number-5.png" />
-                <img ng-if="(!spot.isCovered || minefield.superman) && spot.content == 6 && !spot.isFlaged" src="photos/number-6.png" />
-                <img ng-if="(!spot.isCovered || minefield.superman) && spot.content == 7 && !spot.isFlaged" src="photos/number-7.png" />
-                <img ng-if="(!spot.isCovered || minefield.superman) && spot.content == 8 && !spot.isFlaged" src="photos/number-8.png" />
+                <img ng-if="spot.content  == 'empty'&& (!spot.isCovered || minefield.superman) &&  !spot.isFlaged" src="photos/empty.png" />
+                <img ng-if="spot.content == 'mine'&& (!spot.isCovered || minefield.superman) &&  !spot.isFlaged" src="photos/mine.png" />
+                <img ng-if="spot.content == 1 &&(!spot.isCovered || minefield.superman) &&  !spot.isFlaged" src="photos/number-1.png" />
+                <img ng-if="spot.content == 2 && (!spot.isCovered || minefield.superman) &&  !spot.isFlaged" src="photos/number-2.png" />
+                <img ng-if="spot.content == 3 && (!spot.isCovered || minefield.superman) &&  !spot.isFlaged" src="photos/number-3.png" />
+                <img ng-if="spot.content == 4 && (!spot.isCovered || minefield.superman) &&  !spot.isFlaged" src="photos/number-4.png" />
+                <img ng-if="spot.content == 5 && (!spot.isCovered || minefield.superman) &&  !spot.isFlaged" src="photos/number-5.png" />
+                <img ng-if="spot.content == 6 && (!spot.isCovered || minefield.superman) &&  !spot.isFlaged" src="photos/number-6.png" />
+                <img ng-if="spot.content == 7 && (!spot.isCovered || minefield.superman) &&  !spot.isFlaged" src="photos/number-7.png" />
+                <img ng-if=" spot.content == 8 && (!spot.isCovered || minefield.superman)  && !spot.isFlaged" src="photos/number-8.png" />
                 <img ng-if= "spot.content == 9" src="photos/mine-wrong.png" />
                 <img ng-if= "minefield.superman && spot.isFlaged && spot.content == 'mine'" src="photos/flag-mine.png" />
                 <img ng-if= "minefield.superman && spot.isFlaged && (spot.content != 'mine')" src="photos/flag-mine-wrong.png" />

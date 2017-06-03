@@ -11,7 +11,7 @@ var popupIntreval ;
 var groupOfEmptyCalls ;
 var index ;
 var mapOfEmptyCell= {} ;
-
+var listOfAdjecentGroups ;
 
 (function(angular) {
     'use strict';
@@ -103,8 +103,8 @@ function manageGmae (spot , mineField)
     spot.isCovered = false;
     if (spot.content=="empty")
     {
-        openAllNearByEmptyDFS(spot.row,spot.colm);
-        //openAllNearByEmptFromDic(spot.emptyNum ,mineField);
+        //openAllNearByEmptyDFS(spot.row,spot.colm);
+        openAllNearByEmptFromDic2(spot.emptyNum ,mineField);
     }
     if(spot.content == "mine") { // new
        alertUser("you lost");
@@ -161,7 +161,7 @@ function openAllNearByEmptyDFS(row, colm)
     }
 }
 // a function that preparing all the rmpty spots in grops that it will be quick to open
-function prepareAllNearByGroups(mineField, row ,colum)
+function prepareAllNearByGroups2(mineField, row ,colum)
 {
     var empty1 = -1 ;
     var empty2 = -1 ;
@@ -222,6 +222,7 @@ function prepareAllNearByGroups(mineField, row ,colum)
     pushAllRelventCells(row, colum , thisSpot.emptyNum);
 }
 function pushAllRelventCells (row,colum ,index){
+
     groupOfEmptyCalls[index].push(row) ;
     groupOfEmptyCalls[index].push(colum) ;
 
@@ -258,13 +259,13 @@ function pushAllRelventCells (row,colum ,index){
         groupOfEmptyCalls[index].push(colum - 1);
     }
  }
-function createMinefield()
-{
+function createMinefield(){
 if(!checkIput())
 {
     return ;
 }
     var minefield = {};
+    listOfAdjecentGroups = {};
     minefield.rows = [];
     keysDown = {};
     for(var i = 0; i < numOfRows; i++) {
@@ -281,9 +282,11 @@ if(!checkIput())
         }
 
         minefield.rows.push(row);
+        console.log("i: "+i);
     }
 
-    intreval = setInterval(lastSettingsBoard(minefield), 1);
+   //intreval = setInterval(lastSettingsBoard(minefield), 1);
+    lastSettingsBoard(minefield);
 
     //placeManyRandomMines(minefield);
     //calculateAllNumbers(minefield);
@@ -301,7 +304,7 @@ if(!checkIput())
         keysDown[e.keyCode] = false;
     }, false);
 
-
+console.log("finsh");
     return minefield;
 }
 function lastSettingsBoard (minefield){
@@ -464,11 +467,9 @@ function calculateAllNumbers(minefield) {
         }
     }
 
-    console.log(mapOfEmptyCell);
+   //console.log(mapOfEmptyCell);
 
 }
-
-
 
 function hasWon(minefield) {
     for(var y = 0; y < numOfRows; y++) {
@@ -486,8 +487,7 @@ function hasWon(minefield) {
     return true;
 }
 
-function checkIput()
-{
+function checkIput(){
 
     if (numOfRows>300 || numOfRows<0 ||!isNumber(numOfRows))
     {
@@ -556,14 +556,42 @@ function openAllNearByEmptFromDic(emptyNum , mineField)
     for (var i = 0 ; i <groupOfEmptyCalls[tmp].length ; i=i+2)
     {
          row = groupOfEmptyCalls[tmp][i];
-        // var tmp = groupOfEmptyCalls[emptyNum][i+1];
         colum = groupOfEmptyCalls[tmp][i+1];
         //console.log("row: "+row+"  tmp: "+tmp+"  coulm: "+colum)
-        console.log("row: "+row+"  coulm: "+colum)
+        //console.log("row: "+row+"  coulm: "+colum)
         getSpot(mineField, row, colum).isCovered= false ;
     }
 }
+function openAllNearByEmptFromDic2 (emptyNum , mineField)
+{
+    var row =0 ;
+    var colum = 0;
+    var stackOfGroupToOpen = [];
+    stackOfGroupToOpen.push(emptyNum);
 
+    for (var i = 0 ; i <groupOfEmptyCalls[emptyNum].length ; i=i+2)
+    {
+        row = groupOfEmptyCalls[emptyNum][i];
+        colum = groupOfEmptyCalls[emptyNum][i+1];
+        //console.log("row: "+row+"  tmp: "+tmp+"  coulm: "+colum)
+        //console.log("row: "+row+"  coulm: "+colum)
+        getSpot(mineField, row, colum).isCovered= false ;
+    }
+
+    for(var g =0 ; g < stackOfGroupToOpen.length ; g++) {
+        for (var i = 0; !(listOfAdjecentGroups[stackOfGroupToOpen[g]] === undefined) && i < listOfAdjecentGroups[stackOfGroupToOpen[g]].length; i++) {
+            for (var j = 0; j < groupOfEmptyCalls[listOfAdjecentGroups[stackOfGroupToOpen[g]][i]].length; j = j + 2) {
+                if (stackOfGroupToOpen.indexOf(listOfAdjecentGroups[stackOfGroupToOpen[g]][i])==-1){
+                    stackOfGroupToOpen.push(listOfAdjecentGroups[stackOfGroupToOpen[g]][i]);
+                }
+                row = groupOfEmptyCalls[listOfAdjecentGroups[stackOfGroupToOpen[g]][i]][j];
+                colum = groupOfEmptyCalls[listOfAdjecentGroups[stackOfGroupToOpen[g]][i]][j + 1];
+                getSpot(mineField, row, colum).isCovered = false;
+
+            }
+        }
+    }
+}
 function connectTwoArray (A, B )
 {
     var C =[];
@@ -571,4 +599,67 @@ function connectTwoArray (A, B )
         A.push(B[i]);
     }
     return A ;
+}
+
+function prepareAllNearByGroups (mineField, row ,colum)
+{
+    var empty1 = -1 ;
+    var empty2 = -1 ;
+    var empty3 = -1 ;
+    var empty4 = -1 ;
+
+    var thisSpot = getSpot(mineField, row ,colum) ;
+    var tmpSpot ;
+
+
+    if (colum>0 && ((tmpSpot =getSpot(mineField, row ,colum-1)).content  == 'empty'))
+    {
+        var empty1 = tmpSpot.emptyNum;
+    }
+    if(colum>0 && row>0 && ((tmpSpot =getSpot(mineField, row-1 ,colum-1)).content  == 'empty'))
+    {
+        var empty2 = tmpSpot.emptyNum;
+    }
+    if( row>0 && ((tmpSpot =getSpot(mineField, row-1 ,colum)).content  == 'empty'))
+    {
+        var empty3 = tmpSpot.emptyNum;
+    }
+    if( row>0 && colum<numOfColums-1 && ((tmpSpot =getSpot(mineField, row-1 ,colum+1)).content  == 'empty'))
+    {
+        var empty4 = tmpSpot.emptyNum;
+    }
+    if ((empty1+empty2 +empty3+empty4)==-4)
+    {
+        thisSpot.emptyNum = index ;
+        index ++ ;
+        groupOfEmptyCalls[thisSpot.emptyNum]= [];
+    }
+    else if ((empty1 != -1)){  thisSpot.emptyNum = empty1 ;  }
+    else if ((empty2 != -1)){  thisSpot.emptyNum = empty2 ;  }
+    else if ((empty3 != -1)){  thisSpot.emptyNum = empty3 ;  }
+    else if ((empty4 != -1)){  thisSpot.emptyNum = empty4 ;  }
+
+    var tmp = [empty1 ,empty2 , empty3 , empty4];
+    for (var i = 0 ; i <tmp.length ; i++){
+        for (var j = i+1 ; j < tmp.length ; j++){
+            if (tmp[i]!= -1 && tmp[j]!= -1 && tmp[i]!=tmp[j] )
+            {
+                if (listOfAdjecentGroups[tmp[i]] ===undefined)
+                {
+                    listOfAdjecentGroups[tmp[i]] = [] ;
+                }
+                if (listOfAdjecentGroups[tmp[j]]===undefined)
+                {
+                    listOfAdjecentGroups[tmp[j]] = [] ;
+                }
+                if (listOfAdjecentGroups[tmp[i]].indexOf(tmp[j])!=-1)
+                {
+                    continue ;
+                }
+                listOfAdjecentGroups[tmp[i]].push(tmp[j]) ;
+                listOfAdjecentGroups[tmp[j]].push(tmp[i]) ;
+            }
+        }
+    }
+    pushAllRelventCells(row, colum , thisSpot.emptyNum);
 }
