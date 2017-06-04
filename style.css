@@ -53,8 +53,8 @@ body {
     width: 20%;
 }
 body{
-    /*background: url(photos/background.gif) ;*/
-   background: url(photos/gray.png);
+    background: url(photos/source.gif) ;
+   /*background: url(photos/gray.png);*/
     background-size: 100%;
 
 }
