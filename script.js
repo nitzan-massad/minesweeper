@@ -203,7 +203,7 @@ function prepareAllNearByGroups2(mineField, row ,colum)
         groupOfEmptyCalls[empty4]= [] ;
         mapOfEmptyCell[empty4]= [] ;
         mapOfEmptyCell[empty4].push(empty2) ;
-        console.log("2-4"   +"empty4: "+empty4+" --->  empty2:"+empty2);
+       // console.log("2-4"   +"empty4: "+empty4+" --->  empty2:"+empty2);
 
     }else if ((empty1 != -1)&&(empty4!=-1)&& (empty1!=empty4)){
 
@@ -212,7 +212,7 @@ function prepareAllNearByGroups2(mineField, row ,colum)
         groupOfEmptyCalls[empty4]= [] ;
         mapOfEmptyCell[empty4]= [] ;
         mapOfEmptyCell[empty4].push(empty1) ;
-       console.log("1-4   emtpy4: "+empty4+" ---> empty1:"+empty1);
+       //console.log("1-4   emtpy4: "+empty4+" ---> empty1:"+empty1);
     }
     else if ((empty1 != -1)){  thisSpot.emptyNum = empty1 ; }
     else if ((empty2 != -1)){  thisSpot.emptyNum = empty2 ;   }
@@ -283,7 +283,7 @@ if(!checkIput())
         }
 
         minefield.rows.push(row);
-        console.log("i: "+i);
+       // console.log("i: "+i);
     }
 
    //intreval = setInterval(lastSettingsBoard(minefield), 1);
@@ -305,7 +305,7 @@ if(!checkIput())
         keysDown[e.keyCode] = false;
     }, false);
 
-console.log("finsh");
+//console.log("finsh");
     return minefield;
 }
 function lastSettingsBoard (minefield){
