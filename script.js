@@ -107,7 +107,8 @@ function manageGmae (spot , mineField)
         openAllNearByEmptFromDic2(spot.emptyNum ,mineField);
     }
     if(spot.content == "mine") { // new
-       alertUser("you lost");
+
+        alertUser("you lost");
        spot.content = "9" ;
        //alert(spot.content) ;
        mineField.gameOver  = true ;
@@ -525,20 +526,15 @@ function alertUser ( message) {
     document.getElementById("PopUpAlert").innerHTML = message;
     modal.style.display = "block";
     // When the user clicks on <span> (x), close the modal
-    span.onclick = function() {
+    span.onclick = function () {
         modal.style.display = "none";
     }
     // When the user clicks anywhere outside of the modal, close it
-    window.onclick = function(event) {
+    window.onclick = function (event) {
         if (event.target == modal) {
             modal.style.display = "none";
         }
     }
-
-
-
-
-
 }
 
 function openAllNearByEmptFromDic(emptyNum , mineField)
