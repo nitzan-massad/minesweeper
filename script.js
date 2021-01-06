@@ -15,10 +15,32 @@ var listOfAdjecentGroups ;
 
 (function(angular) {
     'use strict';
-    angular.module('scopeController', [])
+   const app= angular.module('scopeController', [])
         .controller('MinesweeperController', ['$scope', function($scope) {
 
 
+
+
+            $scope.onRightClick = function (spot){
+                if (spot.isCovered){
+                    if (!spot.isFlaged && numOfFlags==0){
+                        alertUser("sorry you dont have any flags left")
+                        return ;
+                    }
+
+                    spot.isFlaged =!spot.isFlaged;
+                    console.log('nitz'+JSON.stringify(spot))
+
+                    if (spot.isFlaged) {
+                        numOfFlags--;
+                    }
+                    else{
+                        numOfFlags++ ;
+                    }
+                    $scope.widget4 = {nomOfFlags: numOfFlags};
+
+                }
+            }
 
             $scope.minefield = createMinefield();
             $scope.uncoverSpot = function(spot) {
@@ -27,7 +49,7 @@ var listOfAdjecentGroups ;
                }
                 if (keysDown[16] && spot.isCovered){
                    if (!spot.isFlaged && numOfFlags==0){
-                       alertUser("soory you dont have any flags left")
+                       alertUser("sorry you dont have any flags left")
                        return ;
                    }
                    spot.isFlaged =!spot.isFlaged;
@@ -77,7 +99,8 @@ var listOfAdjecentGroups ;
                 $scope.minefield = m_mineField ;
             }
 
-        }]);
+        }])
+
 /*
     angular.module('app', [])
         .controller('MainCtrl', function($scope) {
@@ -87,6 +110,17 @@ var listOfAdjecentGroups ;
             }
         });
 */
+    app.directive('ngRightClick', function($parse) {
+        return function(scope, element, attrs) {
+            var fn = $parse(attrs.ngRightClick);
+            element.bind('contextmenu', function(event) {
+                scope.$apply(function() {
+                    event.preventDefault();
+                    fn(scope, {$event:event});
+                });
+            });
+        };
+    });
 
 })(window.angular);
 

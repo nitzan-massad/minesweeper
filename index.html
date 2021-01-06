@@ -37,7 +37,7 @@
     <table class="minefield"  align="center" ; >
 
         <tr ng-repeat="row in minefield.rows" line-height="0" border-spacing="0" padding="0">
-            <td ng-repeat="spot in row.spots" ng-click="uncoverSpot(spot)">
+            <td ng-repeat="spot in row.spots" ng-click="uncoverSpot(spot)" ng-right-click="onRightClick(spot)">
                 <img ng-if=" spot.isFlaged  && !minefield.superman" src="photos/flag-mine.png">
                 <img ng-if="(spot.isCovered && !minefield.superman)&& !spot.isFlaged" src="photos/covered.png" />
                 <img ng-if="spot.content  == 'empty'&& (!spot.isCovered || minefield.superman) &&  !spot.isFlaged" src="photos/empty.png" />
