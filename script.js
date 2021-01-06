@@ -27,9 +27,7 @@ var listOfAdjecentGroups ;
                         alertUser("sorry you dont have any flags left")
                         return ;
                     }
-
                     spot.isFlaged =!spot.isFlaged;
-                    console.log('nitz'+JSON.stringify(spot))
 
                     if (spot.isFlaged) {
                         numOfFlags--;
